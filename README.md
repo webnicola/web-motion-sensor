@@ -15,4 +15,9 @@
 - Johnny Five
 - Vue.js
 
+### Start
 
+- setup Raspberry PI w/ PIR [raspi-io](https://github.com/nebrius/raspi-io)
+- npm install
+- npm start
+- open url: raspberry-ip:8080
