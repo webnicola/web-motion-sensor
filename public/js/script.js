@@ -1,31 +1,42 @@
 // connect socket.io
-var socket = io.connect();
+var socket  = io.connect();
 
 var app = new Vue({
   el: '#app',
   data: {
-    pirvalue: false,
-    pirout: "#000"
+    TIMEOUT: 11000,
+    display: 0,
+    bgcolor: 'pink',
+    free: true,
+    timer: null
   },
   methods: {
-    pirstatus: function (pirvalue) {
-      if(pirvalue) {
-        this.pirout = 'lime';
+    run: function () {
+      if (this.free) {
+        console.log('RUN');
+        this.free   = false;
+        this.bgcolor = 'lime';
+        this.display = 1;
+        this.timer  = setTimeout(this.reset, this.TIMEOUT);
       } else {
-        this.pirout = '#000';
+        console.log('BUSY');
       }
-      this.pirvalue = pirvalue;
-    }
+    },
+    reset: function () {
+      console.log('RESET');
+      if (!this.free) {
+        this.display = 0;
+        this.bgcolor = 'pink';
+        clearTimeout(this.timer);
+        this.free   = true;
+        console.log('FREE');
+      }
+    },
   }
 });
 
 //update message with sensor value
- socket.on('pirstatus', function (data) {
-   if (data) {
-    console.log(data.value);
-    app.pirstatus(data.value);
-  } else {
-    console.log('no data');
-    app.pirstatus = "No data from PIR";
-  }
- });
+socket.on('motion detected', function () {
+  console.log('motion detected');
+  app.run();
+});
